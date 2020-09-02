@@ -114,7 +114,6 @@ class News(object):
             self.parse_page(start_url, year_month[:4])
 
     def parse_page(self, url, year, first=True):
-        print(url)
         # href:
         # //ul[@class="list"]/li/a/@href
         # next page
@@ -130,9 +129,6 @@ class News(object):
                 href = node.xpath('./a/@href')[0]
                 creat_time = node.xpath('./span/text()')[0]
                 title = node.xpath('./a/text()')[0]
-                print(href)
-                print(creat_time)
-                print(title)
                 self.getnews(href, creat_time, title, year)
             except:
                 pass
@@ -141,10 +137,8 @@ class News(object):
         if first:
             try:
                 total_page = int(tree_node.xpath('//p[@class="page_newslib"]/a[last()-1]/text()')[-1])
-                print(total_page)
                 for i in range(2, total_page + 1):
                     url = url.split("_")[0] + "_" + str(i) + '.shtml'
-                    print(url)
                     self.parse_page(url, False)
             except:
                 pass
