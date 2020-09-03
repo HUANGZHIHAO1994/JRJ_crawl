@@ -41,14 +41,14 @@ URL = {"股票频道": "stock",
        "外汇新闻": "forex",
        "保险频道": "Insurance",
        "银行监管": "http://bank.jrj.com.cn/list/jgdt.shtml",
-       "保险监管": "http://insurance.jrj.com.cn/list/jgdt.shtml ",
+#        "保险监管": "http://insurance.jrj.com.cn/list/jgdt.shtml",
        }
 
 # 起始时间、起始月份、结束时间、结束月份
 # "股票频道", "债券频道", "基金频道", "财经新闻", "银行频道", "外汇新闻", "保险频道"爬取时根据需要调整
-START_YEAR = 2019
-START_MONTH = 5
-END_YEAR = 2020
+START_YEAR = 2010
+START_MONTH = 1
+END_YEAR = 2010
 END_MONTH = 12
 
 # 个股排行

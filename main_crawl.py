@@ -40,7 +40,7 @@ class News(object):
         self.collection = self.client[DB_NAME][COLLECTIONS[self.column]]
         if self.column in ["股票频道", "债券频道", "基金频道", "财经新闻", "银行频道", "外汇新闻", "保险频道"]:
             self.url_column = URL[self.column]
-        elif self.column in ["银行监管", "保险监管"]:
+        elif self.column in ["银行监管"]:
             self.url_column = URL[self.column]
 
     # 如果url符合解析要求，则对该页面进行信息提取
@@ -152,6 +152,7 @@ class News(object):
                     # thr = threading.Thread(target=self.getnews, args=(href, creat_time, title, year))
                     # thr.setDaemon(False)
                     # thr.start()
+                    print(href)
                     self.getnews(href, creat_time, title, year)
                 except:
                     pass
@@ -162,11 +163,13 @@ class News(object):
                     total_page = int(tree_node.xpath('//p[@class="page_newslib"]/a[last()-1]/text()')[-1])
                     for i in range(2, total_page + 1):
                         url = url.split("_")[0] + "_" + str(i) + '.shtml'
+                        print("*" * 30)
+                        print(url)
                         self.parse_page(url, year, False)
                 except:
                     pass
 
-        elif self.column in ["银行监管", "保险监管"]:
+        elif self.column in ["银行监管"]:
             news_list = tree_node.xpath('//div[@class="newlist"]/ul/li')
             for node in news_list:
                 try:
@@ -177,6 +180,8 @@ class News(object):
                     # thr = threading.Thread(target=self.getnews, args=(href, creat_time, title, year))
                     # thr.setDaemon(False)
                     # thr.start()
+                    print(href)
+                    print(year)
                     self.getnews(href, creat_time, title, year)
                 except:
                     pass
@@ -185,8 +190,11 @@ class News(object):
             if first:
                 try:
                     total_page = int(tree_node.xpath('//p[@class="page_newslib"]/a[last()-2]/text()')[-1])
+                    print(total_page)
                     for i in range(2, total_page + 1):
-                        url = url.replace(".shtml", "-{}.shtml".format(str(i)))
+                        url = re.split(r'/jgdt', url)[0] + "/" + "jgdt-{}.shtml".format(str(i))
+                        print("*" * 30)
+                        print(url)
                         self.parse_page(url, year, False)
                 except:
                     pass
@@ -198,7 +206,8 @@ class News(object):
 if __name__ == '__main__':
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)  # Log等级总开关
-    # 第二步，创建一个handler，用于写入日志文件
+    
+    
     rq = time.strftime('%Y%m%d%H%M', time.localtime(time.time()))
     # log_path = os.path.dirname(os.getcwd()) + '/Logs/'
     log_path = os.getcwd() + '/Logs/'
@@ -206,10 +215,15 @@ if __name__ == '__main__':
         os.makedirs(log_path)
     log_name = log_path + rq + 'news.log'
     logfile = log_name
+    
+    # 第二步，创建一个handler，用于写入日志文件
     st = logging.StreamHandler()
     fh = logging.FileHandler(logfile, mode='w')
     fh.setLevel(logging.DEBUG)  # 输出到file的log等级的开关
-    st.setLevel(logging.DEBUG)  # 输出到file的log等级的开关
+    st.setLevel(logging.WARNING)  # 输出到file的log等级的开关
+#     st.setLevel(logging.DEBUG)  # 输出到file的log等级的开关
+
+
     # 第三步，定义handler的输出格式
     formatter = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
     fh.setFormatter(formatter)
@@ -221,5 +235,5 @@ if __name__ == '__main__':
     news = News("股票频道")
     news.crawl_start()
 
-    # news = News("银行监管")
-    # news.regular_start()
+#     news = News("银行监管")
+#     news.regular_start()
