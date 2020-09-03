@@ -12,6 +12,9 @@ import json
 import re
 import os
 import threading
+import sys
+
+sys.setrecursionlimit(100000)
 
 
 class News(object):
@@ -44,11 +47,13 @@ class News(object):
         response = requests.get(url, headers=headers)
         response.encoding = response.apparent_encoding
         tree_node = etree.HTML(response.text)
+        if "页面没有找到" in response.text:
+            return
         if year >= 2015:
             content = tree_node.xpath('//div[@class="texttit_m1"]//text()')
             if '.klinehk{margin:0 auto 20px;} ' in content:
                 content = content[:content.index('.klinehk{margin:0 auto 20px;} ')]
-            content = ''.join(content)
+            content = ''.join(content).replace("\u3000", ' ').replace("\r\n", '\n')
             source = tree_node.xpath('//span[contains(text(),"来源")]//text()')
             while '来源：' in source:
                 source.remove('来源：')
@@ -66,7 +71,10 @@ class News(object):
                          "source": source, "content": content, "year": year,
                          "crawl_time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                          }
-            logger.info(str(news_dict))
+            try:
+                logger.info(str(news_dict))
+            except:
+                pass
             try:
                 self.collection.insert_one(news_dict)
             except DuplicateKeyError as e:
@@ -77,7 +85,7 @@ class News(object):
                 '//div[@class="textmain tmf14 jrj-clear"]//text() | //div[@id="IDNewsDtail"]//text()')
             if '.klinehk{margin:0 auto 20px;} ' in content:
                 content = content[:content.index('.klinehk{margin:0 auto 20px;} ')]
-            content = ''.join(content)
+            content = ''.join(content).replace("\u3000", ' ').replace("\r\n", '\n')
             source = tree_node.xpath('//span[contains(text(),"来源")]//text()')
             while '来源：' in source:
                 source.remove('来源：')
@@ -95,7 +103,10 @@ class News(object):
                          "source": source, "content": content, "year": year,
                          "crawl_time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                          }
-            logger.info(str(news_dict))
+            try:
+                logger.info(str(news_dict))
+            except:
+                pass
             try:
                 self.collection.insert_one(news_dict)
             except DuplicateKeyError as e:
@@ -108,10 +119,10 @@ class News(object):
         # 可写成yield迭代器
         for year_month, day in date_list:
             start_url = 'http://{}.jrj.com.cn/xwk/{}/{}_1.shtml'.format(self.url_column, year_month, day)
-            thr = threading.Thread(target=self.parse_page, args=(start_url, year_month[:4]))
-            thr.setDaemon(False)
-            thr.start()
-            # self.parse_page(start_url, year_month[:4])
+            # thr = threading.Thread(target=self.parse_page, args=(start_url, year_month[:4]))
+            # thr.setDaemon(False)
+            # thr.start()
+            self.parse_page(start_url, year_month[:4])
 
     def parse_page(self, url, year, first=True):
         # href:
@@ -129,7 +140,10 @@ class News(object):
                 href = node.xpath('./a/@href')[0]
                 creat_time = node.xpath('./span/text()')[0]
                 title = node.xpath('./a/text()')[0]
-                self.getnews(href, creat_time, title, year)
+                thr = threading.Thread(target=self.getnews, args=(href, creat_time, title, year))
+                thr.setDaemon(False)
+                thr.start()
+                # self.getnews(href, creat_time, title, year)
             except:
                 pass
 
@@ -139,7 +153,7 @@ class News(object):
                 total_page = int(tree_node.xpath('//p[@class="page_newslib"]/a[last()-1]/text()')[-1])
                 for i in range(2, total_page + 1):
                     url = url.split("_")[0] + "_" + str(i) + '.shtml'
-                    self.parse_page(url, False)
+                    self.parse_page(url, year, False)
             except:
                 pass
 
@@ -153,7 +167,7 @@ if __name__ == '__main__':
     log_path = os.getcwd() + '/Logs/'
     if not os.path.exists(log_path):
         os.makedirs(log_path)
-    log_name = log_path + rq + 'penal.log'
+    log_name = log_path + rq + 'news.log'
     logfile = log_name
     st = logging.StreamHandler()
     fh = logging.FileHandler(logfile, mode='w')
@@ -167,5 +181,5 @@ if __name__ == '__main__':
     logger.addHandler(fh)
     logger.addHandler(st)
 
-    news = News("股票频道", 2007, 12, 2020, 8)
+    news = News("股票频道", 2008, 12, 2020, 8)
     news.crawl_start()
