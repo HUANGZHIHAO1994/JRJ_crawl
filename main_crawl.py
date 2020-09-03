@@ -1,4 +1,5 @@
 from config import COLLECTIONS, LOCAL_MONGO_HOST, LOCAL_MONGO_PORT, DB_NAME, USER_AGENTS, URL
+from config import START_MONTH, START_YEAR, END_MONTH, END_YEAR
 from cal_diy import CalStr
 import config as conf
 import requests
@@ -16,6 +17,8 @@ import sys
 import io
 
 sys.setrecursionlimit(100000)
+
+
 # sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf8')  # 改变标准输出的默认编码
 
 
@@ -24,10 +27,10 @@ class News(object):
 
     def __init__(self, column):
         self.column = column  # 新闻栏目（股票频道、债券频道等）
-        self.start_year = None
-        self.start_month = None
-        self.end_year = None
-        self.end_month = None
+        self.start_year = START_YEAR
+        self.start_month = START_MONTH
+        self.end_year = END_YEAR
+        self.end_month = END_MONTH
         # self.url = None  # 该新闻对应的url
         # self.topic = None  # 新闻标题
         # self.date = None  # 新闻发布日期
@@ -116,11 +119,7 @@ class News(object):
             except DuplicateKeyError as e:
                 pass
 
-    def crawl_start(self, start_year, start_month, end_year, end_month):
-        self.start_year = start_year
-        self.start_month = start_month
-        self.end_year = end_year
-        self.end_month = end_month
+    def crawl_start(self):
         c = CalStr(self.start_year, self.start_month, self.end_year, self.end_month)
         date_list = c.calendarlist()
         # print(date_list)
@@ -219,8 +218,8 @@ if __name__ == '__main__':
     logger.addHandler(fh)
     logger.addHandler(st)
 
-    # news = News("股票频道")
-    # news.crawl_start(2020, 7, 2020, 8)
+    news = News("股票频道")
+    news.crawl_start()
 
-    news = News("银行监管")
-    news.regular_start()
+    # news = News("银行监管")
+    # news.regular_start()
