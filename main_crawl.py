@@ -6,15 +6,12 @@ from lxml import etree
 import random
 import time
 import pymongo
-import codecs
-from urllib import request, parse
-from bs4 import BeautifulSoup
-from urllib.error import HTTPError, URLError
 from pymongo.errors import DuplicateKeyError
 import logging
 import json
 import re
 import os
+import threading
 
 
 class News(object):
@@ -66,7 +63,7 @@ class News(object):
             # logger.info(str(keyword))
 
             news_dict = {"_id": url, "title": title, "url": url, "keyword": keyword, "create_time": creat_time,
-                         "source": source, "content": content,
+                         "source": source, "content": content, "year": year,
                          "crawl_time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                          }
             logger.info(str(news_dict))
@@ -111,7 +108,10 @@ class News(object):
         # 可写成yield迭代器
         for year_month, day in date_list:
             start_url = 'http://{}.jrj.com.cn/xwk/{}/{}_1.shtml'.format(self.url_column, year_month, day)
-            self.parse_page(start_url, year_month[:4])
+            thr = threading.Thread(target=self.parse_page, args=(start_url, year_month[:4]))
+            thr.setDaemon(False)
+            thr.start()
+            # self.parse_page(start_url, year_month[:4])
 
     def parse_page(self, url, year, first=True):
         # href:
@@ -167,5 +167,5 @@ if __name__ == '__main__':
     logger.addHandler(fh)
     logger.addHandler(st)
 
-    news = News("股票频道", 2007, 5, 2020, 8)
+    news = News("股票频道", 2007, 12, 2020, 8)
     news.crawl_start()
