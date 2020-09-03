@@ -1,8 +1,10 @@
 <div align="left">
     <img src='https://ftp.bmp.ovh/imgs/2020/08/b77a8439ea51e080.jpg' height="50" width="50" >
  </div>
+
+
 ![jrj_crawl](https://badgen.net/badge/JRJ/crawl?icon=github)
-![GitHub license](https://badgen.net/github/license/HUANGZHIHAO1994/traffic_crawl?color=green)
+![GitHub license](https://badgen.net/github/license/HUANGZHIHAO1994/JRJ_crawl?color=green)
 
 # JRJ_crawl
 
