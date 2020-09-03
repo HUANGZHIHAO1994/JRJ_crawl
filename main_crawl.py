@@ -186,7 +186,7 @@ class News(object):
                 try:
                     total_page = int(tree_node.xpath('//p[@class="page_newslib"]/a[last()-2]/text()')[-1])
                     for i in range(2, total_page + 1):
-                        url = url.replace("jgdt.shtml", "jgdt-{}.shtml".format(str(i)))
+                        url = url.replace(".shtml", "-{}.shtml".format(str(i)))
                         self.parse_page(url, year, False)
                 except:
                     pass
