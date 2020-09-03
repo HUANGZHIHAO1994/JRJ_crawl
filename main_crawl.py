@@ -33,7 +33,7 @@ class News(object):
         # self.author = None  # 新闻作者
         # self.source = None  # 来源
         self.collection = self.client[DB_NAME][COLLECTIONS[self.column]]
-        if self.column in ["股票频道", "债券频道", "基金频道"]:
+        if self.column in ["股票频道", "债券频道", "基金频道", "财经新闻", "银行频道", "外汇新闻", "保险频道"]:
             self.url_column = URL[self.column]
 
     # 如果url符合解析要求，则对该页面进行信息提取
@@ -181,5 +181,5 @@ if __name__ == '__main__':
     logger.addHandler(fh)
     logger.addHandler(st)
 
-    news = News("股票频道", 2008, 12, 2020, 8)
+    news = News("股票频道", 2007, 5, 2020, 8)
     news.crawl_start()

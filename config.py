@@ -20,6 +20,10 @@ DB_NAME = 'JRJ_News'
 COLLECTIONS = {"股票频道": "Stock",
                "债券频道": "Bond",
                "基金频道": "Fund",
+               "财经新闻": "Finance",
+               "外汇新闻": "Forex",
+               "银行频道": "Bank",
+               "保险频道": "Insurance",
                "个股排行": "StockRank",
                "大盘速览": "MarketView"}
 
@@ -27,4 +31,9 @@ COLLECTIONS = {"股票频道": "Stock",
 
 URL = {"股票频道": "stock",
        "债券频道": "bond",
-       "基金频道": "fund"}
+       "基金频道": "fund",
+       "财经新闻": "finance",
+       "银行频道": "bank",
+       "外汇新闻": "forex",
+       "保险频道": "Insurance"
+       }
