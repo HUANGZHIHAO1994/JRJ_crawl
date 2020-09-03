@@ -92,7 +92,7 @@ class News(object):
             # logger.info(str(keyword))
 
             news_dict = {"_id": url, "title": title, "url": url, "keyword": keyword, "create_time": creat_time,
-                         "source": source, "content": content,
+                         "source": source, "content": content, "year": year,
                          "crawl_time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                          }
             logger.info(str(news_dict))
