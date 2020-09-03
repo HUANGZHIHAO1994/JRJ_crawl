@@ -13,19 +13,21 @@ import re
 import os
 import threading
 import sys
+import io
 
 sys.setrecursionlimit(100000)
+# sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf8')  # 改变标准输出的默认编码
 
 
 class News(object):
     client = pymongo.MongoClient(LOCAL_MONGO_HOST, LOCAL_MONGO_PORT)
 
-    def __init__(self, column, start_year, start_month, end_year, end_month):
+    def __init__(self, column):
         self.column = column  # 新闻栏目（股票频道、债券频道等）
-        self.start_year = start_year
-        self.start_month = start_month
-        self.end_year = end_year
-        self.end_month = end_month
+        self.start_year = None
+        self.start_month = None
+        self.end_year = None
+        self.end_month = None
         # self.url = None  # 该新闻对应的url
         # self.topic = None  # 新闻标题
         # self.date = None  # 新闻发布日期
@@ -34,6 +36,8 @@ class News(object):
         # self.source = None  # 来源
         self.collection = self.client[DB_NAME][COLLECTIONS[self.column]]
         if self.column in ["股票频道", "债券频道", "基金频道", "财经新闻", "银行频道", "外汇新闻", "保险频道"]:
+            self.url_column = URL[self.column]
+        elif self.column in ["银行监管", "保险监管"]:
             self.url_column = URL[self.column]
 
     # 如果url符合解析要求，则对该页面进行信息提取
@@ -50,7 +54,7 @@ class News(object):
         if "页面没有找到" in response.text:
             return
         if year >= 2015:
-            content = tree_node.xpath('//div[@class="texttit_m1"]//text()')
+            content = tree_node.xpath('//div[@class="texttit_m1"]//p//text()')
             if '.klinehk{margin:0 auto 20px;} ' in content:
                 content = content[:content.index('.klinehk{margin:0 auto 20px;} ')]
             content = ''.join(content).replace("\u3000", ' ').replace("\r\n", '\n')
@@ -112,7 +116,11 @@ class News(object):
             except DuplicateKeyError as e:
                 pass
 
-    def crawl_start(self):
+    def crawl_start(self, start_year, start_month, end_year, end_month):
+        self.start_year = start_year
+        self.start_month = start_month
+        self.end_year = end_year
+        self.end_month = end_month
         c = CalStr(self.start_year, self.start_month, self.end_year, self.end_month)
         date_list = c.calendarlist()
         # print(date_list)
@@ -124,7 +132,7 @@ class News(object):
             # thr.start()
             self.parse_page(start_url, year_month[:4])
 
-    def parse_page(self, url, year, first=True):
+    def parse_page(self, url, year=2020, first=True):
         # href:
         # //ul[@class="list"]/li/a/@href
         # next page
@@ -132,30 +140,60 @@ class News(object):
         headers = {}
         headers['User-Agent'] = random.choice(USER_AGENTS)
         response = requests.get(url, headers=headers)
+        print(response.text)
         response.encoding = response.apparent_encoding
         tree_node = etree.HTML(response.text)
-        news_list = tree_node.xpath('//ul[@class="list"]/li')
-        for node in news_list:
-            try:
-                href = node.xpath('./a/@href')[0]
-                creat_time = node.xpath('./span/text()')[0]
-                title = node.xpath('./a/text()')[0]
-                thr = threading.Thread(target=self.getnews, args=(href, creat_time, title, year))
-                thr.setDaemon(False)
-                thr.start()
-                # self.getnews(href, creat_time, title, year)
-            except:
-                pass
+        if self.column in ["股票频道", "债券频道", "基金频道", "财经新闻", "银行频道", "外汇新闻", "保险频道"]:
+            news_list = tree_node.xpath('//ul[@class="list"]/li')
+            for node in news_list:
+                try:
+                    href = node.xpath('./a/@href')[0]
+                    creat_time = node.xpath('./span/text()')[0]
+                    title = node.xpath('./a/text()')[0]
+                    # thr = threading.Thread(target=self.getnews, args=(href, creat_time, title, year))
+                    # thr.setDaemon(False)
+                    # thr.start()
+                    self.getnews(href, creat_time, title, year)
+                except:
+                    pass
 
-        # 判断next page
-        if first:
-            try:
-                total_page = int(tree_node.xpath('//p[@class="page_newslib"]/a[last()-1]/text()')[-1])
-                for i in range(2, total_page + 1):
-                    url = url.split("_")[0] + "_" + str(i) + '.shtml'
-                    self.parse_page(url, year, False)
-            except:
-                pass
+            # 判断next page
+            if first:
+                try:
+                    total_page = int(tree_node.xpath('//p[@class="page_newslib"]/a[last()-1]/text()')[-1])
+                    for i in range(2, total_page + 1):
+                        url = url.split("_")[0] + "_" + str(i) + '.shtml'
+                        self.parse_page(url, year, False)
+                except:
+                    pass
+
+        elif self.column in ["银行监管", "保险监管"]:
+            news_list = tree_node.xpath('//div[@class="newlist"]/ul/li')
+            for node in news_list:
+                try:
+                    href = node.xpath('.//a/@href')[0]
+                    creat_time = node.xpath('.//i/text()')[0]
+                    year = creat_time.split("-")[0]
+                    title = node.xpath('.//a/text()')[0]
+                    # thr = threading.Thread(target=self.getnews, args=(href, creat_time, title, year))
+                    # thr.setDaemon(False)
+                    # thr.start()
+                    self.getnews(href, creat_time, title, year)
+                except:
+                    pass
+
+            # 判断next page
+            if first:
+                try:
+                    total_page = int(tree_node.xpath('//p[@class="page_newslib"]/a[last()-2]/text()')[-1])
+                    for i in range(2, total_page + 1):
+                        url = url.replace("jgdt.shtml", "jgdt-{}.shtml".format(str(i)))
+                        self.parse_page(url, year, False)
+                except:
+                    pass
+
+    def regular_start(self):
+        self.parse_page(self.url_column)
 
 
 if __name__ == '__main__':
@@ -181,5 +219,8 @@ if __name__ == '__main__':
     logger.addHandler(fh)
     logger.addHandler(st)
 
-    news = News("股票频道", 2007, 5, 2020, 8)
-    news.crawl_start()
+    # news = News("股票频道")
+    # news.crawl_start(2020, 7, 2020, 8)
+
+    news = News("银行监管")
+    news.regular_start()

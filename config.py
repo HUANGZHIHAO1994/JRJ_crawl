@@ -24,6 +24,8 @@ COLLECTIONS = {"股票频道": "Stock",
                "外汇新闻": "Forex",
                "银行频道": "Bank",
                "保险频道": "Insurance",
+               "银行监管": "BankReg",
+               "保险监管": "InsurReg",
                "个股排行": "StockRank",
                "大盘速览": "MarketView"}
 
@@ -35,5 +37,7 @@ URL = {"股票频道": "stock",
        "财经新闻": "finance",
        "银行频道": "bank",
        "外汇新闻": "forex",
-       "保险频道": "Insurance"
+       "保险频道": "Insurance",
+       "银行监管": "http://bank.jrj.com.cn/list/jgdt.shtml",
+       "保险监管": "http://insurance.jrj.com.cn/list/jgdt.shtml ",
        }
