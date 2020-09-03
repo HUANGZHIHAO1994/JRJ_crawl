@@ -140,7 +140,7 @@ class News(object):
         headers = {}
         headers['User-Agent'] = random.choice(USER_AGENTS)
         response = requests.get(url, headers=headers)
-        print(response.text)
+        # print(response.text)
         response.encoding = response.apparent_encoding
         tree_node = etree.HTML(response.text)
         if self.column in ["股票频道", "债券频道", "基金频道", "财经新闻", "银行频道", "外汇新闻", "保险频道"]:
