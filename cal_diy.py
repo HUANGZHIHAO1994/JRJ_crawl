@@ -17,9 +17,9 @@ class CalStr(TextCalendar):
     def calendarlist(self):
         cal_list = []
         if self.end_year == self.start_year:
-            if self.start_month != self.end_month:
+            if self.start_month != self.end_month:    # 后来发现不用判断这个
                 for year in range(self.start_year, self.end_year + 1):
-                    for month in range(self.start_month, self.end_month):
+                    for month in range(self.start_month, self.end_month + 1):
                         year_month = time.strftime("%Y%m", time.strptime("{}-{}".format(year, month), "%Y-%m"))
                         all_days = eval(calendar.month(year, month).split()[-1])
                         for day in range(1, all_days + 1):
@@ -59,7 +59,7 @@ class CalStr(TextCalendar):
                         cal_list.append(list_tmp)
             # end year
             for year in range(self.end_year, self.end_year + 1):
-                for month in range(self.start_month, 13):
+                for month in range(1, 13):
                     year_month = time.strftime("%Y%m", time.strptime("{}-{}".format(year, month), "%Y-%m"))
                     all_days = eval(calendar.month(year, month).split()[-1])
                     for day in range(1, all_days + 1):
@@ -85,7 +85,7 @@ class CalStr(TextCalendar):
                         cal_list.append(list_tmp)
             # end year
             for year in range(self.end_year, self.end_year + 1):
-                for month in range(self.start_month, 13):
+                for month in range(1, self.end_month + 1):
                     year_month = time.strftime("%Y%m", time.strptime("{}-{}".format(year, month), "%Y-%m"))
                     all_days = eval(calendar.month(year, month).split()[-1])
                     for day in range(1, all_days + 1):

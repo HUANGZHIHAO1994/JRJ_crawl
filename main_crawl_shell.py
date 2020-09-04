@@ -203,80 +203,80 @@ class News(object):
         self.parse_page(self.url_column)
 
 
-if __name__ == '__main__':
-    logger = logging.getLogger()
-    logger.setLevel(logging.INFO)  # Log等级总开关
+# if __name__ == '__main__':
+#     logger = logging.getLogger()
+#     logger.setLevel(logging.INFO)  # Log等级总开关
 
 
-    rq = time.strftime('%Y%m%d%H%M', time.localtime(time.time()))
-    # log_path = os.path.dirname(os.getcwd()) + '/Logs/'
-    log_path = os.getcwd() + '/Logs/'
-    if not os.path.exists(log_path):
-        os.makedirs(log_path)
-    log_name = log_path + rq + 'news.log'
-    logfile = log_name
+#     rq = time.strftime('%Y%m%d%H%M', time.localtime(time.time()))
+#     # log_path = os.path.dirname(os.getcwd()) + '/Logs/'
+#     log_path = os.getcwd() + '/Logs/'
+#     if not os.path.exists(log_path):
+#         os.makedirs(log_path)
+#     log_name = log_path + rq + 'news.log'
+#     logfile = log_name
 
-    # 第二步，创建一个handler，用于写入日志文件
-    st = logging.StreamHandler()
-    fh = logging.FileHandler(logfile, mode='w')
-    fh.setLevel(logging.DEBUG)  # 输出到file的log等级的开关
-    st.setLevel(logging.WARNING)  # 输出到file的log等级的开关
-    #     st.setLevel(logging.DEBUG)  # 输出到file的log等级的开关
+#     # 第二步，创建一个handler，用于写入日志文件
+#     st = logging.StreamHandler()
+#     fh = logging.FileHandler(logfile, mode='w')
+#     fh.setLevel(logging.DEBUG)  # 输出到file的log等级的开关
+#     st.setLevel(logging.WARNING)  # 输出到file的log等级的开关
+#     #     st.setLevel(logging.DEBUG)  # 输出到file的log等级的开关
 
 
-    # 第三步，定义handler的输出格式
-    formatter = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
-    fh.setFormatter(formatter)
-    st.setFormatter(formatter)
-    # 第四步，将logger添加到handler里面
-    logger.addHandler(fh)
-    logger.addHandler(st)
+#     # 第三步，定义handler的输出格式
+#     formatter = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
+#     fh.setFormatter(formatter)
+#     st.setFormatter(formatter)
+#     # 第四步，将logger添加到handler里面
+#     logger.addHandler(fh)
+#     logger.addHandler(st)
 
-    news = News("股票频道")
-    news.crawl_start()
+#     news = News("股票频道")
+#     news.crawl_start()
 
-    #     news = News("银行监管")
-    #     news.regular_start()
+#     #     news = News("银行监管")
+#     #     news.regular_start()
 
 
 
 ################## 被shell调用版本 #########################
-# END_YEAR = START_YEAR = int(sys.argv[1])
-# END_MONTH = START_MONTH = int(sys.argv[2])
-# print(sys.argv[1])
-# print(sys.argv[2])
+END_YEAR = START_YEAR = int(sys.argv[1])
+END_MONTH = START_MONTH = int(sys.argv[2])
+print(sys.argv[1])
+print(sys.argv[2])
 
 
-# logger = logging.getLogger()
-# logger.setLevel(logging.INFO)  # Log等级总开关
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)  # Log等级总开关
 
 
-# rq = time.strftime('%Y%m%d%H%M', time.localtime(time.time()))
-# # log_path = os.path.dirname(os.getcwd()) + '/Logs/'
-# log_path = os.getcwd() + '/Logs/'
-# if not os.path.exists(log_path):
-#     os.makedirs(log_path)
-# log_name = log_path + rq + 'news.log'
-# logfile = log_name
+rq = time.strftime('%Y%m%d%H%M', time.localtime(time.time()))
+# log_path = os.path.dirname(os.getcwd()) + '/Logs/'
+log_path = os.getcwd() + '/Logs/'
+if not os.path.exists(log_path):
+    os.makedirs(log_path)
+log_name = log_path + rq + 'news.log'
+logfile = log_name
 
-# # 第二步，创建一个handler，用于写入日志文件
-# st = logging.StreamHandler()
-# fh = logging.FileHandler(logfile, mode='w')
-# fh.setLevel(logging.DEBUG)  # 输出到file的log等级的开关
-# st.setLevel(logging.WARNING)  # 输出到file的log等级的开关
-# #     st.setLevel(logging.DEBUG)  # 输出到file的log等级的开关
+# 第二步，创建一个handler，用于写入日志文件
+st = logging.StreamHandler()
+fh = logging.FileHandler(logfile, mode='w')
+fh.setLevel(logging.DEBUG)  # 输出到file的log等级的开关
+st.setLevel(logging.WARNING)  # 输出到file的log等级的开关
+#     st.setLevel(logging.DEBUG)  # 输出到file的log等级的开关
 
 
-# # 第三步，定义handler的输出格式
-# formatter = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
-# fh.setFormatter(formatter)
-# st.setFormatter(formatter)
-# # 第四步，将logger添加到handler里面
-# logger.addHandler(fh)
-# logger.addHandler(st)
+# 第三步，定义handler的输出格式
+formatter = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
+fh.setFormatter(formatter)
+st.setFormatter(formatter)
+# 第四步，将logger添加到handler里面
+logger.addHandler(fh)
+logger.addHandler(st)
 
-# news = News("股票频道")
-# news.crawl_start()
+news = News("股票频道")
+news.crawl_start()
 
-# #     news = News("银行监管")
-# #     news.regular_start()
+#     news = News("银行监管")
+#     news.regular_start()
