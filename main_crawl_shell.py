@@ -206,10 +206,10 @@ class News(object):
 # 被shell调用版本
 END_YEAR = START_YEAR = int(sys.argv[1])
 END_MONTH = START_MONTH = int(sys.argv[2])
-KEYWORD_PD = str(sys.argv[3])
+# KEYWORD_PD = str(sys.argv[3])
 print(sys.argv[1])
 print(sys.argv[2])
-print(sys.argv[3])
+# print(sys.argv[3])
 
 
 logger = logging.getLogger()
@@ -239,7 +239,7 @@ st.setFormatter(formatter)
 logger.addHandler(fh)
 logger.addHandler(st)
 
-news = News(KEYWORD_PD)
+news = News("股票频道")
 news.crawl_start()
 
 #     news = News("银行监管")

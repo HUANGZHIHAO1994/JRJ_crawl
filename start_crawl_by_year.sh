@@ -1,9 +1,11 @@
 #!/bin/bash
 
-# bash ./start_crawl_by_year.sh 2007
+# bash ./start_crawl_by_year.sh 2007 股票频道
 
 
-for((i=5;i<=12;i++))
+for((i=11;i<=12;i++))
 do
-    python main_crawl_shell.py $1 $i $2 &
+    python main_crawl_shell.py $1 $i &
 done
+
+echo "=============================================================="
