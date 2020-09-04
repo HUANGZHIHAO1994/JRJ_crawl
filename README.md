@@ -14,7 +14,7 @@
 
 2.样本中的3查看config.py中STOCK_KEYWORD后运行stock_industry.py
 
-3.样本中的1的更稳定更快shell版本：修改start_crawl_by_year.sh中for循环的起止月份后运行，如：bash ./start_crawl_by_year.sh 2007 
+3.样本中的1的更稳定更快shell版本：修改main_crawl_shell.py中News的频道，修改start_crawl_by_year.sh中for循环的起止月份后运行，如：bash ./start_crawl_by_year.sh 2007 
 
 
 ## 二.样本：
