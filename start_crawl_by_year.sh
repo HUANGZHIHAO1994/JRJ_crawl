@@ -5,5 +5,5 @@
 
 for((i=5;i<=12;i++))
 do
-    python main_crawl_shell.py $* $i &
+    python main_crawl_shell.py $1 $i $2 &
 done

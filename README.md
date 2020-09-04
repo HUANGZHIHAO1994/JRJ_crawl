@@ -8,11 +8,15 @@
 
 # JRJ_crawl
 
-下面样本中的1，2按需修改config.py后运行main_crawl.py即可
+## 一.使用说明：
 
-样本中的3查看config.py中STOCK_KEYWORD后运行stock_industry.py
+1.下面样本中的1，2按需修改config.py后运行main_crawl.py即可
 
-## 一.样本：
+2.样本中的3查看config.py中STOCK_KEYWORD后运行stock_industry.py
+
+3.样本中的1的更稳定更快shell版本：修改start_crawl_by_year.sh中for循环的起止月份后运行，如：bash ./start_crawl_by_year.sh 2007 股票频道
+
+## 二.样本：
 
 1."股票频道", "债券频道", "基金频道", "财经新闻", "银行频道", "外汇新闻", "保险频道"样本：
 
