@@ -124,6 +124,8 @@ class News(object):
         date_list = c.calendarlist()
         # print(date_list)
         # 可写成yield迭代器
+        # 可使用reverse反向补齐
+        date_list.reverse()
         for year_month, day in date_list:
             start_url = 'http://{}.jrj.com.cn/xwk/{}/{}_1.shtml'.format(self.url_column, year_month, day)
             # thr = threading.Thread(target=self.parse_page, args=(start_url, year_month[:4]))
