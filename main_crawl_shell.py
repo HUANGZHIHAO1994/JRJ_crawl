@@ -125,7 +125,7 @@ class News(object):
         # print(date_list)
         # 可写成yield迭代器
         # 可使用reverse反向补齐
-        date_list.reverse()
+#         date_list.reverse()
         for year_month, day in date_list:
             start_url = 'http://{}.jrj.com.cn/xwk/{}/{}_1.shtml'.format(self.url_column, year_month, day)
             # thr = threading.Thread(target=self.parse_page, args=(start_url, year_month[:4]))
@@ -149,6 +149,9 @@ class News(object):
             for node in news_list:
                 try:
                     href = node.xpath('./a/@href')[0]
+                    if href.startswith("//"):
+                        href = "http:" + href
+
                     creat_time = node.xpath('./span/text()')[0]
                     title = node.xpath('./a/text()')[0]
                     # thr = threading.Thread(target=self.getnews, args=(href, creat_time, title, year))
@@ -241,7 +244,7 @@ st.setFormatter(formatter)
 logger.addHandler(fh)
 logger.addHandler(st)
 
-news = News("股票频道")
+news = News("基金频道")
 news.crawl_start()
 
 #     news = News("银行监管")
